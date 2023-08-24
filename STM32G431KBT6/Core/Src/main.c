@@ -18,10 +18,12 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "i2c-lcd.h"
 #include "stdio.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -65,11 +67,15 @@ static void MX_USART1_UART_Init(void);
 char time[10];
 char date[10];
 
+uint8_t buffer[64];
+
 RTC_TimeTypeDef sTime;
 RTC_DateTypeDef sDate;
 
 RTC_DateTypeDef gDate;
 RTC_TimeTypeDef gTime;
+
+uint8_t data[4];
 
 void Display_Row1 (void)
 {
@@ -87,9 +93,9 @@ void set_time (void)
 {
     /**Initialize RTC and set the Time and Date
     */
-  sTime.Hours = 0x15;
-  sTime.Minutes = 0x31;
-  sTime.Seconds = 0x45;
+  sTime.Hours = 0x10;
+  sTime.Minutes = 0x52;
+  sTime.Seconds = 0x00;
   sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
   sTime.StoreOperation = RTC_STOREOPERATION_RESET;
   if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
@@ -97,9 +103,9 @@ void set_time (void)
      Error_Handler();
    }
 
-  sDate.WeekDay = RTC_WEEKDAY_TUESDAY;
+  sDate.WeekDay = RTC_WEEKDAY_WEDNESDAY;
   sDate.Month = RTC_MONTH_AUGUST;
-  sDate.Date = 0x08;
+  sDate.Date = 0x09;
   sDate.Year = 0x23;
 
   if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
@@ -177,9 +183,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  HAL_I2C_Slave_Receive_IT(&hi2c2, (uint8_t *) data, 8);
+	  //get_time();
+	  //display_time();
     /* USER CODE END WHILE */
-	  get_time();
-	  display_time();
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
